@@ -17,7 +17,7 @@ router.get("/product/all",productControll.all);
 router.post("/transaction/add",transactionControll.add);
 
 // List History of Transaction
-router.get("/transaction/all",transactionControll.all);
+router.get("/transaction/all/:userId",transactionControll.all);
 
 // Remove All Transaction Data
 router.get("/transaction/purge",transactionControll.purge);
