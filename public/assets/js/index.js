@@ -22,7 +22,6 @@ new Vue({
     showShoppingCart:false
   },
   created:function(){ // Dijalankan ketika HTML pertama kali berjalan
-    this.allTransaction();
     this.allProducts();
     this.updateState();
     this.checkTotal();
@@ -62,6 +61,7 @@ new Vue({
         console.log(err);
       });
     },
+    // Retrieve all transaction data from database
     allTransaction:function(){
       axios.get("http://localhost:3000/api/transaction/all",{
         params:{
