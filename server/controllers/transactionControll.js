@@ -11,9 +11,8 @@ module.exports={
   },
   all:(req,res)=>{
     Transaction.find({
-      userId:req.query.userId
+      userId:req.params.userId
     }).populate("userId").populate("itemList.itemId").then((transaction)=>{
-      // res.send(transaction);
       res.send({status:true,transaction:transaction});
     }).catch((err)=>{
       res.send({status:false,msg:"Failed to retrieve transaction data!"});
