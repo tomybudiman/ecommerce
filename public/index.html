@@ -44,12 +44,14 @@
     <ul class="row category-body" id="category-body">
       <li class="col-xs-4 col-sm-3 col-lg-2" v-for="category in categoryList">
         <div class="each-category-container">
-          <div class="each-category">
-            <div class="wrap">
-              <img v-bind:src="category.image" v-bind:alt="category.title">
-              <span>{{category.title}}</span>
+          <a href="#">
+            <div class="each-category">
+              <div class="wrap">
+                <img v-bind:src="category.image" v-bind:alt="category.title">
+                <span>{{category.title}}</span>
+              </div>
             </div>
-          </div>
+          </a>
         </div>
       </li>
     </ul>
@@ -124,6 +126,8 @@
       </li>
     </ul>
   </div>
+  <!-- Footer -->
+  <div class="footer"></div>
   <script src="./assets/lib/js/axios.min.js"></script>
   <script src="./assets/lib/js/jquery.min.js"></script>
   <script src="./assets/lib/js/jquery-ui.min.js"></script>

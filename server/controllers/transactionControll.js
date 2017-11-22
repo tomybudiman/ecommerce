@@ -11,7 +11,7 @@ module.exports={
   },
   all:(req,res)=>{
     Transaction.find({
-      userId:req.body.userId
+      userId:req.query.userId
     }).populate("userId").populate("itemList.itemId").then((transaction)=>{
       // res.send(transaction);
       res.send({status:true,transaction:transaction});

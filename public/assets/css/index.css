@@ -189,6 +189,9 @@ html, body {
       position: relative;
       -webkit-box-sizing: border-box;
       box-sizing: border-box; }
+      .category-body li .each-category-container a {
+        color: #555;
+        text-decoration: none; }
     .category-body li .each-category {
       top: 0;
       width: 100%;
@@ -212,8 +215,13 @@ html, body {
           margin-top: 25px;
           text-align: center;
           font-family: "Roboto",sans-serif; }
-        @media screen and (max-width: 768px) {
+        @media screen and (max-width: 650px) {
           .category-body li .each-category .wrap span {
+            font-size: 14px;
+            margin-top: 15px; } }
+        @media screen and (max-width: 400px) {
+          .category-body li .each-category .wrap span {
+            font-size: 12px;
             margin-top: 15px; } }
     .category-body li .each-category:hover {
       background-color: #F1F1F1; }
@@ -226,6 +234,7 @@ html, body {
   margin: auto;
   display: none;
   padding: 25px;
+  max-width: 500px;
   max-height: 500px;
   overflow-y: scroll;
   position: absolute;

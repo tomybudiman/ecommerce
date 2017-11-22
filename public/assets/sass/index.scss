@@ -210,6 +210,10 @@
       position: relative;
       -webkit-box-sizing: border-box;
       box-sizing: border-box;
+      a {
+        color: #555;
+        text-decoration: none;
+      }
     }
     .each-category {
       top: 0;
@@ -236,8 +240,15 @@
           text-align: center;
           font-family: "Roboto",sans-serif;
         }
-        @media screen and (max-width: 768px){
+        @media screen and (max-width: 650px){
           span {
+            font-size: 14px;
+            margin-top: 15px;
+          }
+        }
+        @media screen and (max-width: 400px){
+          span {
+            font-size: 12px;
             margin-top: 15px;
           }
         }
@@ -258,6 +269,7 @@
   margin: auto;
   display: none;
   padding: 25px;
+  max-width: 500px;
   max-height: 500px;
   overflow-y: scroll;
   position: absolute;
@@ -460,4 +472,8 @@
       box-shadow: 0 0 5px 0 rgba(0,0,0,.2);
     }
   }
+}
+
+//====================> Styling for footer
+.footer {
 }

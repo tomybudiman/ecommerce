@@ -4,6 +4,7 @@ new Vue({
   data:{
     products:[],
     shoppingCart:null,
+    transactionHistory:null,
     total:0,
     categoryList:[
       {title:"Processor",image:"./assets/icon/processor.png"},
@@ -14,12 +15,14 @@ new Vue({
       {title:"Power Supply",image:"./assets/icon/power-source.png"},
       {title:"Network",image:"./assets/icon/ethernet.png"},
       {title:"Mouse",image:"./assets/icon/mouse.png"},
-      {title:"Keyboard",image:"./assets/icon/keyboard.png"}
+      {title:"Keyboard",image:"./assets/icon/keyboard.png"},
+      {title:"Transaction History",image:"./assets/icon/money-bag.png"}
     ],
     showCategory:false,
     showShoppingCart:false
   },
   created:function(){ // Dijalankan ketika HTML pertama kali berjalan
+    this.allTransaction();
     this.allProducts();
     this.updateState();
     this.checkTotal();
@@ -55,6 +58,17 @@ new Vue({
         }else{
           console.log("Something went wrong!");
         }
+      }).catch((err)=>{
+        console.log(err);
+      });
+    },
+    allTransaction:function(){
+      axios.get("http://localhost:3000/api/transaction/all",{
+        params:{
+          userId:"5a14b6743518333a09835780"
+        }
+      }).then((transaction)=>{
+        console.log(transaction.data);
       }).catch((err)=>{
         console.log(err);
       });
