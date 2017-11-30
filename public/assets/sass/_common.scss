@@ -1,5 +1,21 @@
 @import url('https://fonts.googleapis.com/css?family=Bangers|Roboto:300,400');
 
+$mobile-size:400px;
+
 html,body {
+  height: 100%;
   background-color: #F1F1F1;
+}
+
+#app {
+  height: 100%;
+}
+
+input[type="number"] {
+    -moz-appearance:textfield;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }

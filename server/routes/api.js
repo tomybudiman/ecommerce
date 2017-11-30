@@ -11,6 +11,12 @@ router.post("/product/add",productControll.add);
 // Retrieve all product list
 router.get("/product/all",productControll.all);
 
+// Delete product based on id
+router.delete("/product/delete/:id",productControll.delete);
+
+// Update product based on id
+router.put("/product/update/:id",productControll.update);
+
 //===========================> Transaction
 
 // Add Transaction
