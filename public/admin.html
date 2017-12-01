@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./assets/css/admin.css">
+  <script src="http://library.tomybudiman.cf/js/vue.js"></script>
+  <title>IT Garage | Admin Page</title>
+</head>
+<body>
+  <div id="app">
+    <!-- Sidebar Menu -->
+    <button type="button" class="sidebar-button glyphicon glyphicon-menu-hamburger" @click="toggleSidebar"></button>
+    <div class="sidebar-menu">
+      <div class="row main-row">
+        <button type="button" class="col-xs-2" @click="toggleSidebar">X</button>
+        <div class="col-xs-10 sidebar-title">
+          <span>Admin Page</span>
+        </div>
+      </div>
+      <ul class="menu-list">
+        <li class="active">
+          <span class="glyphicon glyphicon-menu-right"></span>
+          <a href="#product-tab" data-toggle="tab">
+            <span>Product</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <!-- Main Content -->
+    <div class="tab-content main-tab-content">
+      <!-- Product Section -->
+      <div id="product-tab" class="active">
+        <ul class="nav nav-tabs">
+          <li class="active">
+            <a data-toggle="tab" href="#product-list-tab">Product List</a>
+          </li>
+          <li>
+            <a data-toggle="tab" href="#product-add-tab">Add Product</a>
+          </li>
+        </ul>
+        <!-- Edit Modal -->
+        <div id="edit-modal" class="edit-product-modal modal fade" role="dialog">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Edit Product</h4>
+              </div>
+              <div class="modal-body">
+                <span class="input-label">Product Name</span>
+                <input type="text" v-model="editProduct.title">
+                <span class="input-label">Product Price</span>
+                <input type="number" v-model="editProduct.price">
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" @click="updateProduct">Update</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-content">
+          <div id="product-list-tab" class="tab-pane active">
+            <product-list v-for="(product,index) in products" :key="index" :product="product" @deleteproduct="deleteProduct" @triggereditmodal="showEditModal"/>
+          </div>
+          <div id="product-add-tab" class="tab-pane">
+            <add-product @addproduct="addProductList"/>
+          </div>
+        </div>
+      </div>
+      <!-- Other Section -->
+    </div>
+  </div>
+  <script src="http://library.tomybudiman.cf/js/axios.min.js"></script>
+  <script src="http://library.tomybudiman.cf/js/jquery-3.2.1.min.js"></script>
+  <script src="http://library.tomybudiman.cf/js/bootstrap.min.js"></script>
+  <script src="./assets/js/component-admin.js"></script>
+  <script type="text/javascript">
+  // VueJS Instance
+  new Vue({
+    el:"#app",
+    data:{
+      products:null,
+      sidebarStatus:false,
+      editProduct:{
+        id:null,
+        title:null,
+        price:null
+      },
+      host:"http://localhost:3000/"
+    },
+    created:function(){
+      setTimeout(function(){
+        this.getProductList();
+      }.bind(this),500);
+    },
+    methods:{
+      toggleSidebar:function(){ // Toggle sidebar menu
+        this.sidebarStatus=!this.sidebarStatus;
+        if(this.sidebarStatus){
+          $(".sidebar-menu").css("width","100%");
+        }else{
+          $(".sidebar-menu").css("width","0%");
+        }
+      },
+      getProductList:function(){
+        axios.get(this.host+"api/product/all").then(function({data}){
+          this.products=data.products;
+        }.bind(this)).catch(function(err){
+          console.log(err);
+        });
+      },
+      addProductList:function(payload){
+        this.products.unshift(payload);
+      },
+      deleteProduct:function(payload){
+        this.products.forEach(function(product,i){
+          if(product._id == payload){
+            this.products.splice(i,1);
+          }
+        }.bind(this));
+      },
+      showEditModal:function(payload){
+        this.editProduct.title=payload.title;
+        this.editProduct.price=payload.price;
+        this.editProduct.id=payload._id;
+        $("#edit-modal").modal("toggle");
+      },
+      updateProduct:function(){
+        axios.put(this.host+"api/product/update/"+this.editProduct.id,{
+          title:this.editProduct.title,
+          price:this.editProduct.price
+        }).then(function({data}){
+          if(data.status){
+            this.products.forEach(function(product,i){
+              if(product._id == this.editProduct.id){
+                this.products[i].title=this.editProduct.title;
+                this.products[i].price=this.editProduct.price;
+              }
+            }.bind(this));
+          }else{
+            console.log(data.msg);
+          }
+        }.bind(this)).catch(function(err){
+          console.log(err);
+        });
+      }
+    }
+  });
+  </script>
+</body>
+</html>

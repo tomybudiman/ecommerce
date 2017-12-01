@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./assets/css/access.css">
+  <script src="http://library.tomybudiman.cf/js/vue.js"></script>
+  <title>IT Garage | User Access</title>
+</head>
+<body>
+  <div id="app">
+    <div class="access-container">
+      <ul class="tab-group">
+        <li><button type="button" @click="toSignup">SignUp</button></li>
+        <li><button type="button" @click="toSignin">SignIn</button></li>
+      </ul>
+      <div class="form">
+        <ul class="form-group">
+        <li id="main-form" style="margin-left: -100%;">
+          <input type="text" placeholder="Email" v-model="inputEmail">
+          <input type="password" placeholder="Password" v-model="inputPassword">
+          <input type="button" class="general" value="SignUp" @click="signupReguler">
+        </li>
+        <li>
+          <input type="text" placeholder="Email">
+          <input type="password" placeholder="Password">
+          <input type="button" class="general" value="SignIn" @click="signinReguler">
+        </li>
+      </ul>
+      </div>
+    </div>
+  </div>
+  <script src="http://library.tomybudiman.cf/js/axios.min.js"></script>
+  <script src="http://library.tomybudiman.cf/js/jquery-3.2.1.min.js"></script>
+  <script src="http://library.tomybudiman.cf/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+  // VueJS Instance
+  new Vue({
+    el:"#app",
+    data:{
+      inputEmail:null,
+      inputPassword:null,
+      domainHost:"http://localhost:3000/"
+    },
+    methods:{
+      toSignin:function(){
+        $("#main-form").animate({"margin-left":"-100%"},700);
+      },
+      toSignup:function(){
+        $("#main-form").animate({"margin-left":"0"},700,function(){
+          $(this).removeAttr("style");
+        });
+      },
+      signupReguler:function(){
+        axios.post(this.domainHost+"api/user/add",{
+          email:this.inputEmail,
+          password:this.inputPassword
+        }).then(function({data}){
+          if(!data.status){
+            console.log(data.msg);
+          }else{
+            console.log("Success creating user!");
+            this.inputPassword=null;
+            this.inputEmail=null;
+          }
+        }.bind(this)).catch(function(err){
+          console.log(err);
+        });
+      },
+      signinReguler:function(){}
+    }
+  });
+  </script>
+</body>
+</html>
