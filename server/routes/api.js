@@ -33,7 +33,13 @@ router.get("/transaction/purge",transactionControll.purge);
 // Add New User
 router.post("/user/add",userControll.add);
 
+// Login User
+router.post("/user/login",userControll.login);
+
 // Retrieve Users List
 router.get("/user/all",userControll.all);
+
+// Get user data
+router.get("/user/get",userControll.get);
 
 module.exports=router;

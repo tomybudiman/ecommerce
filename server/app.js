@@ -9,9 +9,13 @@ app.use(parser.urlencoded({extended:false}));
 app.use(parser.json());
 app.use(cors());
 
+app.get("/",(req,res)=>{
+  res.send("It's work!");
+});
+
 const api=require("./routes/api");
 app.use("/api",api);
 
-app.listen(3000,()=>{
-  console.log("Server started! Listenning on port 3000");
+app.listen(process.env.PORT,()=>{
+  console.log(`Server started! Listenning on port ${process.env.PORT}`);
 });

@@ -22,18 +22,42 @@ module.exports={
           res.send({status:true,data:stats});
         });
       }).catch((err)=>{
-        res.send({status:false,msg:"Failed to add new user!"});
+        res.send({status:false,msg:err});
       });
     }
   },
   login:(req,res)=>{
-    res.send(req.body);
+    if(req.body.email != "" && req.body.password != ""){
+      User.find({
+        email:req.body.email
+      }).then((user)=>{
+        if(user.length == 0){
+          res.send({status:false,msg:"User not found!"})
+        }else{
+          bcrypt.compare(req.body.password,user[0].password,(err,hash)=>{
+            if(hash){
+              const token=jwt.sign({id:user[0]._id,isAdmin:user[0].isAdmin},process.env.SECRET_KEY);
+              res.send({status:hash,token:token});
+            }else{
+              res.send({status:false,msg:"Wrong password!"});
+            }
+          });
+        }
+      }).catch((err)=>{
+        res.send({status:false,msg:err});
+      });
+    }
   },
   all:(req,res)=>{
     User.find().then((users)=>{
       res.send({status:true,users:users});
     }).catch((err)=>{
       res.send({status:false,msg:"Failed to retrieve all user data!"})
+    });
+  },
+  get:(req,res)=>{
+    jwt.verify(req.headers.token,process.env.SECRET_KEY,(err,data)=>{
+      res.send(data);
     });
   }
 };

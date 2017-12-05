@@ -62,6 +62,8 @@ Vue.component("add-product",{
         price:this.productPrice,
         imageUrl:this.imagePreview
       }).then(function({data}){
+        this.productPrice=null,
+        this.productName=null,
         this.$emit("addproduct",data.msg);
       }.bind(this)).catch(function(err){
         console.log(err);
