@@ -90,6 +90,11 @@
       },
       host:"http://localhost:3000/"
     },
+    beforeCreate(){
+      if(localStorage.getItem("login_ecommerce") == null){
+        window.location="index.html";
+      }
+    },
     created:function(){
       setTimeout(function(){
         this.getProductList();
@@ -115,6 +120,7 @@
         this.products.unshift(payload);
       },
       deleteProduct:function(payload){
+        console.log("hapus");
         this.products.forEach(function(product,i){
           if(product._id == payload){
             this.products.splice(i,1);

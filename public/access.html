@@ -20,12 +20,12 @@
         <li id="main-form" style="margin-left: -100%;">
           <input type="text" placeholder="Email" v-model="inputEmail">
           <input type="password" placeholder="Password" v-model="inputPassword">
-          <input type="button" class="general" value="SignUp" @click="signupReguler">
+          <input type="button" class="general" value="SignUp" @click="signup">
         </li>
         <li>
-          <input type="text" placeholder="Email">
-          <input type="password" placeholder="Password">
-          <input type="button" class="general" value="SignIn" @click="signinReguler">
+          <input type="text" placeholder="Email" v-model="inputEmail">
+          <input type="password" placeholder="Password" v-model="inputPassword">
+          <input type="button" class="general" value="SignIn" @click="signin">
         </li>
       </ul>
       </div>
@@ -39,20 +39,29 @@
   new Vue({
     el:"#app",
     data:{
-      inputEmail:null,
-      inputPassword:null,
+      inputEmail:"",
+      inputPassword:"",
       domainHost:"http://localhost:3000/"
+    },
+    beforeCreate(){
+      if(localStorage.getItem("login_ecommerce") != null){
+        window.location="index.html";
+      }
     },
     methods:{
       toSignin:function(){
         $("#main-form").animate({"margin-left":"-100%"},700);
+        this.inputEmail=null;
+        this.inputPassword=null;
       },
       toSignup:function(){
         $("#main-form").animate({"margin-left":"0"},700,function(){
           $(this).removeAttr("style");
         });
+        this.inputEmail=null;
+        this.inputPassword=null;
       },
-      signupReguler:function(){
+      signup:function(){
         axios.post(this.domainHost+"api/user/add",{
           email:this.inputEmail,
           password:this.inputPassword
@@ -68,7 +77,21 @@
           console.log(err);
         });
       },
-      signinReguler:function(){}
+      signin:function(){
+        axios.post(this.domainHost+"api/user/login",{
+          email:this.inputEmail,
+          password:this.inputPassword
+        }).then(function({data}){
+          if(data.status){
+            localStorage.setItem("login_ecommerce",data.token);
+            window.location="index.html";
+          }else{
+            console.log(data.msg);
+          }
+        }.bind(this)).catch(function(err){
+          console.log(err);
+        });
+      }
     }
   });
   </script>

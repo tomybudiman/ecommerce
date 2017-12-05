@@ -54,6 +54,45 @@
           </a>
         </div>
       </li>
+      <!-- Jika User Login Sebagai Admin -->
+      <li class="col-xs-4 col-sm-3 col-lg-2" v-if="isAdmin">
+        <div class="each-category-container">
+          <a href="admin.html">
+            <div class="each-category">
+              <div class="wrap">
+                <img src="./assets/icon/admin.png" alt="Admin">
+                <span>Admin</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </li>
+      <!-- Jika Pengguna Telah Login -->
+      <li class="col-xs-4 col-sm-3 col-lg-2" v-if="isAdmin != null">
+        <div class="each-category-container">
+          <a href="" @click="logout">
+            <div class="each-category">
+              <div class="wrap">
+                <img src="./assets/icon/logout.png" alt="Admin">
+                <span>Logout</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </li>
+      <!-- Jika Pengguna Belum Login -->
+      <li class="col-xs-4 col-sm-3 col-lg-2" v-if="isAdmin == null">
+        <div class="each-category-container">
+          <a href="access.html">
+            <div class="each-category">
+              <div class="wrap">
+                <img src="./assets/icon/login.png" alt="Admin">
+                <span>Login</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </li>
     </ul>
     <!-- Shopping Cart List -->
     <ul class="shopping-cart-list" id="shopping-cart-list">
@@ -141,6 +180,8 @@
       shoppingCart:null,
       transactionHistory:null,
       total:0,
+      loggedInId:null,
+      isAdmin:null,
       categoryList:[
         {title:"Processor",image:"./assets/icon/processor.png"},
         {title:"HDD",image:"./assets/icon/hard-disk.png"},
@@ -150,19 +191,38 @@
         {title:"Power Supply",image:"./assets/icon/power-source.png"},
         {title:"Network",image:"./assets/icon/ethernet.png"},
         {title:"Mouse",image:"./assets/icon/mouse.png"},
-        {title:"Keyboard",image:"./assets/icon/keyboard.png"},
-        {title:"Transaction History",image:"./assets/icon/money-bag.png"}
+        {title:"Keyboard",image:"./assets/icon/keyboard.png"}
       ],
       showCategory:false,
       showShoppingCart:false,
       host:"http://localhost:3000/"
     },
     created:function(){ // Dijalankan ketika HTML pertama kali berjalan
+      this.getUserData();
       this.allProducts();
       this.updateState();
       this.checkTotal();
     },
     methods:{
+      // Get user data if there any login token detected
+      getUserData(){
+        if(localStorage.getItem("login_ecommerce") != null){
+          axios.get(this.host+"api/user/get",{
+            headers:{
+              token:localStorage.getItem("login_ecommerce")
+            }
+          }).then(function({data}){
+            this.loggedInId=data.id;
+            this.isAdmin=data.isAdmin;
+          }.bind(this)).catch(function(err){
+            console.log(err);
+          });
+        }
+      },
+      logout(){
+        localStorage.removeItem("login_ecommerce");
+        window.location.reload();
+      },
       // Show / Hide Category
       categoryBehavior:function(){
         var duration=800;
@@ -193,18 +253,6 @@
           }else{
             console.log("Something went wrong!");
           }
-        }).catch((err)=>{
-          console.log(err);
-        });
-      },
-      // Retrieve all transaction data from database
-      allTransaction:function(){
-        axios.get(this.host+"api/transaction/all",{
-          params:{
-            userId:"5a14b6743518333a09835780"
-          }
-        }).then((transaction)=>{
-          console.log(transaction.data);
         }).catch((err)=>{
           console.log(err);
         });
@@ -288,22 +336,26 @@
           }
           return obj
         }.bind(this));
-        axios.post(this.host+"api/transaction/add",{
-          userId:"5a14b6743518333a09835780",
-          itemList:itemList,
-          total:this.total
-        }).then(function(stats){
-          if(stats.data.status){
-            this.total=0;
-            this.shoppingCart=null;
-            localStorage.removeItem("shopping-cart");
-            this.cartBehavior();
-          }else{
-            console.log(stats.data.msg);
-          }
-        }.bind(this)).catch(function(err){
-          console.log("Something went wrong! Check 'checkout section'!");
-        });
+        if(localStorage.getItem("login_ecommerce") != null){
+          axios.post(this.host+"api/transaction/add",{
+            userId:this.loggedInId,
+            itemList:itemList,
+            total:this.total
+          }).then(function(stats){
+            if(stats.data.status){
+              this.total=0;
+              this.shoppingCart=null;
+              localStorage.removeItem("shopping-cart");
+              this.cartBehavior();
+            }else{
+              console.log(stats.data.msg);
+            }
+          }.bind(this)).catch(function(err){
+            console.log("Something went wrong! Check 'checkout section'!");
+          });
+        }else{
+          alert("Please login first!");
+        }
       }
     }
   });
